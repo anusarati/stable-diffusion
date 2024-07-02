@@ -1,5 +1,5 @@
 import torch
-import pytorch_lightning as pl
+import lightning as L
 import torch.nn.functional as F
 from contextlib import contextmanager
 
@@ -11,7 +11,7 @@ from ldm.modules.distributions.distributions import DiagonalGaussianDistribution
 from ldm.util import instantiate_from_config
 
 
-class VQModel(pl.LightningModule):
+class VQModel(L.LightningModule):
     def __init__(self,
                  ddconfig,
                  lossconfig,
@@ -188,7 +188,7 @@ class VQModel(pl.LightningModule):
                    prog_bar=True, logger=True, on_step=False, on_epoch=True, sync_dist=True)
         self.log(f"val{suffix}/aeloss", aeloss,
                    prog_bar=True, logger=True, on_step=False, on_epoch=True, sync_dist=True)
-        if version.parse(pl.__version__) >= version.parse('1.4.0'):
+        if version.parse(L.__version__) >= version.parse('1.4.0'):
             del log_dict_ae[f"val{suffix}/rec_loss"]
         self.log_dict(log_dict_ae)
         self.log_dict(log_dict_disc)
@@ -282,7 +282,7 @@ class VQModelInterface(VQModel):
         return dec
 
 
-class AutoencoderKL(pl.LightningModule):
+class AutoencoderKL(L.LightningModule):
     def __init__(self,
                  ddconfig,
                  lossconfig,

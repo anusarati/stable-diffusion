@@ -1,0 +1,27 @@
+model:
+  base_learning_rate: 4.5e-6
+  target: ldm.models.autoencoder.AutoencoderKL
+  params:
+    monitor: "val/rec_loss"
+    embed_dim: 16
+    lossconfig:
+      target: ldm.modules.losses.LPIPSWithDiscriminator
+      params:
+        disc_start: 50001
+        kl_weight: 0.000001
+        disc_weight: 0.5
+        lpips_kwargs: # PARAMETER
+          custom_checkpoint:
+          scale_params:
+
+    ddconfig:
+      double_z: True
+      z_channels: 16
+      resolution: 256
+      in_channels: # PARAMETER
+      out_ch: # PARAMETER
+      ch: 128
+      ch_mult: [1, 2, 4, 4] # num_down = len(ch_mult)-1
+      num_res_blocks: 2
+      attn_resolutions: [16]
+      dropout: 0.0
