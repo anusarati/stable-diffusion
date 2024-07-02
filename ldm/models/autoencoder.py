@@ -292,6 +292,7 @@ class AutoencoderKL(L.LightningModule):
                  image_key="image",
                  colorize_nlabels=None,
                  monitor=None,
+                 learning_rate=4.5e-5
                  ):
         super().__init__()
         self.image_key = image_key
@@ -309,6 +310,7 @@ class AutoencoderKL(L.LightningModule):
             self.monitor = monitor
         if ckpt_path is not None:
             self.init_from_ckpt(ckpt_path, ignore_keys=ignore_keys)
+        self.learning_rate = learning_rate
 
     def init_from_ckpt(self, path, ignore_keys=list()):
         sd = torch.load(path, map_location="cpu")["state_dict"]
