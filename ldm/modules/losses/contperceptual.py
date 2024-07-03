@@ -14,7 +14,7 @@ class LPIPSWithDiscriminator(nn.Module):
         assert disc_loss in ["hinge", "vanilla"]
         self.kl_weight = kl_weight
         self.pixel_weight = pixelloss_weight
-        self.perceptual_loss = LPIPS(**lpips_kwargs).eval()
+        self.perceptual_loss = LPIPS(**lpips_kwargs)#.eval()
         self.perceptual_weight = perceptual_weight
         # output log variance
         self.logvar = nn.Parameter(torch.ones(size=()) * logvar_init)
@@ -45,7 +45,8 @@ class LPIPSWithDiscriminator(nn.Module):
     def forward(self, inputs, reconstructions, posteriors, optimizer_idx,
                 global_step, last_layer=None, cond=None, split="train",
                 weights=None):
-        rec_loss = torch.abs(inputs.contiguous() - reconstructions.contiguous())
+        min_shape = list(map(min, inputs.shape[-2:], reconstructions.shape[-2:]))
+        rec_loss = torch.abs(inputs.contiguous() - reconstructions[..., min_shape[0], min_shape[1]].contiguous())
         if self.perceptual_weight > 0:
             p_loss = self.perceptual_loss(inputs.contiguous(), reconstructions.contiguous())
             rec_loss = rec_loss + self.perceptual_weight * p_loss
