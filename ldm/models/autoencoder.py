@@ -413,8 +413,6 @@ class AutoencoderKL(L.LightningModule):
         reconstructions, posterior = self(batch)
 
         opt0, opt1 = self.optimizers()
-        opt0.zero_grad()
-        opt1.zero_grad()
 
         # train encoder+decoder+logvar
         aeloss, log_dict_ae = self.loss(
@@ -432,6 +430,7 @@ class AutoencoderKL(L.LightningModule):
         self.log_dict(
             log_dict_ae, prog_bar=False, logger=True, on_step=True, on_epoch=False
         )
+        opt0.zero_grad()
         self.manual_backward(aeloss)
         opt0.step()
 
@@ -457,6 +456,7 @@ class AutoencoderKL(L.LightningModule):
         self.log_dict(
             log_dict_disc, prog_bar=False, logger=True, on_step=True, on_epoch=False
         )
+        opt1.zero_grad()
         self.manual_backward(discloss)
         opt1.step()
 
