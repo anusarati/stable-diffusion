@@ -46,7 +46,7 @@ class LPIPSWithDiscriminator(nn.Module):
                 global_step, last_layer=None, cond=None, split="train",
                 weights=None):
         min_shape = list(map(min, inputs.shape[-2:], reconstructions.shape[-2:]))
-        rec_loss = torch.abs(inputs.contiguous() - reconstructions[..., min_shape[0], min_shape[1]].contiguous())
+        rec_loss = torch.abs(inputs.contiguous() - reconstructions[..., :min_shape[0], :min_shape[1]].contiguous())
         if self.perceptual_weight > 0:
             p_loss = self.perceptual_loss(inputs.contiguous(), reconstructions.contiguous())
             rec_loss = rec_loss + self.perceptual_weight * p_loss
